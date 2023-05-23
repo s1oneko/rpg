@@ -17,8 +17,10 @@ public class AddController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 planarVec;
     private Vector3 thrustVec;
+    private Vector3 deltaPosition;
 
     private bool lockPlanar=false;
+    private bool applyMove = false;
 
     void Awake()
     {
@@ -30,15 +32,36 @@ public class AddController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("forward",pi.Dmag* Mathf.Lerp(animator.GetFloat("forward"), pi.run ? 2.0f : 1.0f, 0.5f));//平滑起跑
+        animator.SetFloat("forward", pi.Dmag * Mathf.Lerp(animator.GetFloat("forward"), pi.run ? 2.0f : 1.0f, 0.5f));//平滑起跑
         if (pi.jump)
         {
             animator.SetTrigger("jump");
-        }
-        if (pi.attack && animator.GetCurrentAnimatorStateInfo(animator.GetLayerIndex("Base Layer")).fullPathHash == Animator.StringToHash("Base Layer.ground")&&!animator.IsInTransition(animator.GetLayerIndex("Base Layer")))
+        }        
+        if (pi.lattack)
         {
-            animator.SetTrigger("attack");
+            if(!pi.isEquiped) 
+            {
+                animator.SetTrigger("lattack");
+            }
+            else
+            {
+                pi.isEquiped = !pi.isEquiped;
+                animator.SetTrigger("switchWeapon");
+            }
         }
+        if (pi.rattack)
+        {
+            if (pi.isEquiped)
+            {
+                animator.SetTrigger("rattack");
+            }
+            else
+            {
+                pi.isEquiped = !pi.isEquiped;
+                animator.SetTrigger("switchWeapon");
+            }
+        }
+
         if (pi.Dmag > 0.1f)
         {
             Vector3 targetForward = Vector3.Slerp(model.transform.forward, pi.Dvec,0.1f);//平滑转身
@@ -46,13 +69,15 @@ public class AddController : MonoBehaviour
         }
         if (!lockPlanar)
         {
-            planarVec = pi.Dmag * model.transform.forward * walkSpeed * (pi.run ? runMuti : 1.0f);
+            planarVec = pi.Dmag * model.transform.forward * walkSpeed * (pi.run ? runMuti : 1.0f)*(pi.isEquiped? 0.5f : 1f);
         }
     }
     void FixedUpdate()
     {
+        rb.position += deltaPosition;
         rb.velocity = new Vector3(planarVec.x, rb.velocity.y, planarVec.z) + thrustVec;//y向只有原来速度和冲力
         thrustVec = Vector3.zero;
+        deltaPosition = Vector3.zero;
     }
     /// <summary>
     /// Message processing
@@ -75,10 +100,22 @@ public class AddController : MonoBehaviour
     }
     public void OnGroundEnter()
     {
+        applyMove = false;
         pi.inputEnabled = true;
         lockPlanar = false;
     }
     public void OnGroundExit()
+    {
+        pi.inputEnabled = false;
+        lockPlanar = true;
+    }
+    public void OnIdleEnter()
+    {
+        applyMove = false;
+        pi.inputEnabled = true;
+        lockPlanar = false;
+    }
+    public void OnIdleExit()
     {
         pi.inputEnabled = false;
         lockPlanar = true;
@@ -91,21 +128,15 @@ public class AddController : MonoBehaviour
     {
         thrustVec = model.transform.forward * animator.GetFloat("jumpVelocity");
     }
-    public void OnAttack_1h_AEnter()
+    public void OnAttackEnter() 
     {
-        animator.SetLayerWeight(1, 1.0f);//attack为第一层
+        applyMove = true;
     }
-    public void OnAttack_1h_AUpdate()
+    public void OnUpdateRootMotion(object _deltaPosition)
     {
-        thrustVec = model.transform.forward * animator.GetFloat("attack_1h_AVelocity");
-    }
-    public void OnAttackIdleEnter()
-    {
-        pi.inputEnabled = true;
-        animator.SetLayerWeight(1, 0);//attack为第一层
-    }
-    public void OnAttackIdleExit()
-    {
-        pi.inputEnabled = false;
+        if (applyMove)
+        {
+            deltaPosition += (Vector3)_deltaPosition;
+        }
     }
 }

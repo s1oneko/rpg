@@ -15,6 +15,7 @@ public class PlayerInput : MonoBehaviour
     public KeyCode keyB = KeyCode.Space;
     public string keyC;
     public string keyD;
+    public string keyE;
 
     public string keyJUp;
     public string keyJDown;
@@ -35,8 +36,11 @@ public class PlayerInput : MonoBehaviour
     public bool jump=false;
     private bool lastJump=false;
 
-    public bool attack = false;
-    private bool lastAttack = false;
+    public bool lattack = false;
+    public bool rattack = false;
+    public bool isEquiped =false;
+    private bool lastLAttack = false;
+    private bool lastRAttack = false;
 
     [Header("Others")]
     public bool inputEnabled=true;
@@ -78,6 +82,7 @@ public class PlayerInput : MonoBehaviour
         Dmag = Mathf.Sqrt((_Dup * _Dup) + (_Dright * _Dright));
         Dvec= _Dright * transform.right + _Dup * transform.forward;
 
+
         //跑步
         run = Input.GetKey(keyA);
 
@@ -90,12 +95,19 @@ public class PlayerInput : MonoBehaviour
         lastJump = tempJump;
 
         //攻击
-        bool tempAttack = Input.GetKey(keyC);
-        if (tempAttack != lastAttack)
+        bool tempLAttack = Input.GetKey(keyC);
+        if (tempLAttack != lastLAttack)
         {
-            attack = tempAttack;
+            lattack = tempLAttack;
         }
-        lastAttack = tempAttack;
+        lastLAttack = tempLAttack;
+
+        bool tempRAttack = Input.GetKey(keyD);
+        if (tempRAttack != lastRAttack)
+        {
+            rattack = tempRAttack;
+        }
+        lastRAttack = tempRAttack;
     }
     private void SquareMapToCircle(float x ,float y)//解决斜方向速度1.414问题
     {
