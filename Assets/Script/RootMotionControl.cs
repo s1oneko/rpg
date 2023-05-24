@@ -11,6 +11,6 @@ public class RootMotionControl : MonoBehaviour
     }
     private void OnAnimatorMove()
     {
-        SendMessageUpwards("OnUpdateRootMotion",animator.deltaPosition);
+        SendMessageUpwards("OnUpdateRootMotion", animator.GetFloat("AnimationMove"));
     }
 }

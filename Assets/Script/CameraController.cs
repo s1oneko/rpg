@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public PlayerInput pi;
-    [SerializeField]
-    private GameObject model;
+    //private PlayerInput pi;
+    public ControllerInput pi;
+    public GameObject model;
 
     public float horizontalSpeed=20.0f;
     public float vecticalSpeed = 20.0f;
@@ -28,6 +28,10 @@ public class CameraController : MonoBehaviour
         cameraHandle = transform.parent.gameObject;
         playerHandle = cameraHandle.transform.parent.gameObject;
 
+        pi= playerHandle.GetComponent<ControllerInput>();
+        //pi = playerHandle.GetComponent<PlayerInput>();
+        model = playerHandle.GetComponent<AddController>().model;
+
         lastPosition = model.transform.position;
         lastLocalRotation = cameraHandle.transform.localRotation;
         lastRotation = transform.rotation;
@@ -39,7 +43,7 @@ public class CameraController : MonoBehaviour
     {
         tempModelRotation = model.transform.rotation;
         playerHandle.transform.rotation *= Quaternion.Euler(0, pi.Jright * horizontalSpeed * Time.fixedDeltaTime, 0);
-        tempEulerX -= pi.Jup * vecticalSpeed * Time.fixedDeltaTime;
+        tempEulerX += pi.Jup * vecticalSpeed * Time.fixedDeltaTime;
         tempEulerX = Mathf.Clamp(tempEulerX, -40, 30);
         cameraHandle.transform.localRotation = Quaternion.Euler(tempEulerX, 0, 0);
         if (lastPosition != model.transform.position)
