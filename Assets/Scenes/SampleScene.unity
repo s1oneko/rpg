@@ -425,11 +425,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 670359009}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c80ede7b761b1bc48afe99482c9c0aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Dup: 0
+  Dright: 0
+  Dmag: 0
+  Dvec: {x: 0, y: 0, z: 0}
+  Jup: 0
+  Jright: 0
+  run: 0
+  jump: 0
+  lattack: 0
+  rattack: 0
+  defence: 0
+  isEquiped: 0
+  inputEnabled: 1
   keyUp: w
   keyDown: s
   keyLeft: a
@@ -443,18 +456,6 @@ MonoBehaviour:
   keyJDown: down
   keyJLeft: left
   keyJRight: right
-  Dup: 0
-  Dright: 0
-  Dmag: 0
-  Dvec: {x: 0, y: 0, z: 0}
-  Jup: 0
-  Jright: 0
-  run: 0
-  jump: 0
-  lattack: 0
-  rattack: 0
-  isEquiped: 0
-  inputEnabled: 1
 --- !u!136 &670359011
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -534,14 +535,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b97778be56cf5ef4da72d15184a36906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  axisX: Dright
-  axisY: Dup
-  axis3: Jright
-  axis6: Jup
-  L1: L1
-  X: X
-  R1: R1
-  R2: R2
   Dup: 0
   Dright: 0
   Dmag: 0
@@ -552,8 +545,18 @@ MonoBehaviour:
   jump: 0
   lattack: 0
   rattack: 0
+  defence: 0
   isEquiped: 0
   inputEnabled: 1
+  axisX: Dright
+  axisY: Dup
+  axis3: Jright
+  axis6: Jup
+  L1: L1
+  X: X
+  R1: R1
+  R2: R2
+  L2: L2
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,6 +837,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 44831b94b17c89249b5aaf5561c6987e, type: 2}
     - target: {fileID: 9500000, guid: 1ca7a7a6afda43546bd0e1bba3aec6bd, type: 3}
+      propertyPath: m_UpdateMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 1ca7a7a6afda43546bd0e1bba3aec6bd, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
@@ -859,6 +866,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
       propertyPath: m_Name
       value: SM_Katana01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
       propertyPath: m_IsActive
@@ -931,6 +942,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: c42679b5f5373904cab203907d233f45, type: 3}
   m_PrefabInstance: {fileID: 1448233245}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1199208152
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115069156}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.84399, y: 0.09131715, z: 0.4826887}
+  m_Center: {x: -0.63420963, y: 0.00000073424405, z: 0.009029801}
 --- !u!1 &1294127043
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,6 +998,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
       propertyPath: m_Name
       value: GreatSword_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
       propertyPath: m_IsActive
@@ -1051,6 +1079,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
       propertyPath: m_Name
       value: GreatSword_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: c42679b5f5373904cab203907d233f45, type: 3}
       propertyPath: m_IsActive
@@ -1188,6 +1220,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
       propertyPath: m_Name
       value: SM_Katana01
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
       propertyPath: m_IsActive
@@ -1634,3 +1670,16 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 1d407a6008b748b4f9fec2ed72ffde73, type: 3}
   m_PrefabInstance: {fileID: 1182276920}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &2146420827
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441579981}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.081165016, y: 1.1987948, z: 0.11785481}
+  m_Center: {x: 0.000000083284206, y: -0.3885414, z: 0.0138551565}

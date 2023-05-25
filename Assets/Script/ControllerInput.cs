@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ControllerInput : MonoBehaviour
+public class ControllerInput : UserInput
 {
     [Header("Controller Setting")]
     public string axisX = "Dright";
@@ -14,37 +14,8 @@ public class ControllerInput : MonoBehaviour
     public string X = "X";   //跳跃
     public string R1 = "R1"; //轻攻击
     public string R2 = "R2"; //重攻击
+    public string L2 = "L2";
 
-    [Header("Output Signals")]
-    public float Dup;
-    public float Dright;
-    public float Dmag;
-    public Vector3 Dvec;
-    public float Jup;
-    public float Jright;
-
-
-    public bool run;
-
-    public bool jump = false;
-    private bool lastJump = false;
-
-    public bool lattack = false;
-    public bool rattack = false;
-    public bool isEquiped = false;
-    private bool lastLAttack = false;
-    private bool lastRAttack = false;
-
-    [Header("Others")]
-    public bool inputEnabled = true;
-    private float targetDup;
-    private float targetDright;
-    private float velocityDup;
-    private float velocityDright;
-    private float _Dup;
-    private float _Dright;
-
-    // Update is called once per frame
     void Update()
     {
         //移动
@@ -95,10 +66,12 @@ public class ControllerInput : MonoBehaviour
             rattack = tempRAttack;
         }
         lastRAttack = tempRAttack;
-    }
-    private void SquareMapToCircle(float x, float y)//解决斜方向速度1.414问题
-    {
-        _Dup = x * Mathf.Sqrt(1 - (y * y) / 2.0f);
-        _Dright = y * Mathf.Sqrt(1 - (x * x) / 2.0f);
+
+        bool tempDefence = Input.GetButton(L2);
+        if (tempDefence != lastDefence)
+        {
+            defence= tempDefence;
+        }
+        lastDefence = tempDefence;
     }
 }

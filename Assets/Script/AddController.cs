@@ -5,8 +5,7 @@ using UnityEngine;
 public class AddController : MonoBehaviour
 {
     public GameObject model;
-  //public PlayerInput pi;
-    public ControllerInput pi;
+    public UserInput pi;
     public float walkSpeed = 1.0f;
     public float runMuti = 2.0f;
     public float jumpVelocity = 3.8f;
@@ -21,13 +20,22 @@ public class AddController : MonoBehaviour
     private Vector3 deltaPosition;
 
     private bool lockPlanar=false;
+    private bool canMove=true;
 
     void Awake()
     {
         animator=model.GetComponent<Animator>();
-      //pi = GetComponent<PlayerInput>();
-        pi=GetComponent<ControllerInput>();
+        UserInput[]pis=GetComponents<UserInput>();
+        foreach(UserInput p in pis)
+        {
+            if (p.enabled)
+            {
+                pi = p;
+                break;
+            }
+        }
         rb=GetComponent<Rigidbody>();
+        animator.SetBool("isEquiped", pi.isEquiped);
     }
 
     // Update is called once per frame
@@ -36,11 +44,6 @@ public class AddController : MonoBehaviour
         if (!lockPlanar)
         {
             planarVec = pi.Dmag * model.transform.forward * walkSpeed * (pi.run ? runMuti : 1.0f) * (pi.isEquiped ? 0.5f : 1f);
-        }
-        else if (pi.lattack||pi.rattack)
-        {
-            planarVec = Vector3.zero;
-            rb.velocity = Vector3.zero;
         }
         animator.SetFloat("forward", pi.Dmag * Mathf.Lerp(animator.GetFloat("forward"), pi.run ? 2.0f : 1.0f, 0.5f));//平滑起跑
         if (pi.jump)
@@ -55,9 +58,12 @@ public class AddController : MonoBehaviour
             }
             else
             {
-                pi.isEquiped = !pi.isEquiped;
-                animator.SetTrigger("switchWeapon");
+                SwitchWeapon();
             }
+        }
+        if (pi.defence)
+        {
+            animator.SetTrigger("defence");
         }
         if (pi.rattack)
         {
@@ -67,8 +73,7 @@ public class AddController : MonoBehaviour
             }
             else
             {
-                pi.isEquiped = !pi.isEquiped;
-                animator.SetTrigger("switchWeapon");
+                SwitchWeapon();
             }
         }
 
@@ -80,10 +85,18 @@ public class AddController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        rb.position += deltaPosition*Time.fixedDeltaTime*0.5f;
-        rb.velocity = new Vector3(planarVec.x, rb.velocity.y, planarVec.z) + thrustVec;//y向只有原来速度和冲力
+        rb.position += deltaPosition*Time.fixedDeltaTime;
+        if (canMove)
+        {
+            rb.velocity = new Vector3(planarVec.x, rb.velocity.y, planarVec.z) + thrustVec;//y向只有原来速度和冲力
+        }
         thrustVec = Vector3.zero;
         deltaPosition = Vector3.zero;
+    }
+    public void SwitchWeapon()
+    {
+        pi.isEquiped = !pi.isEquiped;
+        animator.SetTrigger("switchWeapon");
     }
     /// <summary>
     /// Message processing
@@ -106,6 +119,7 @@ public class AddController : MonoBehaviour
     }
     public void OnGroundEnter()
     {
+        canMove = true;
         pi.inputEnabled = true;
         lockPlanar = false;
     }
@@ -115,7 +129,8 @@ public class AddController : MonoBehaviour
         lockPlanar = true;
     }
     public void OnIdleEnter()
-    { 
+    {
+        canMove = true;
         pi.inputEnabled = true;
         lockPlanar = false;
     }
@@ -134,6 +149,23 @@ public class AddController : MonoBehaviour
     }
     public void OnUpdateRootMotion(object _deltaPosition)
     {
-        deltaPosition +=(model.transform.forward*(float)_deltaPosition);
+        deltaPosition +=model.transform.forward*(float)_deltaPosition;
+    }
+    public void ClearVelocity()
+    {
+        canMove = false;
+    }
+    public void EnableVelocity()
+    {
+        canMove = true;
+    }
+    public void OnDefenceEnter() 
+    {
+        animator.SetBool("isEquiped", pi.isEquiped);
+        animator.ResetTrigger("defence");
+    }
+    public void OnDefenceExit()
+    {
+        animator.ResetTrigger("defence");
     }
 }

@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    //private PlayerInput pi;
-    public ControllerInput pi;
+    public UserInput pi;
     public GameObject model;
 
     public float horizontalSpeed=20.0f;
@@ -27,9 +26,15 @@ public class CameraController : MonoBehaviour
     {
         cameraHandle = transform.parent.gameObject;
         playerHandle = cameraHandle.transform.parent.gameObject;
-
-        pi= playerHandle.GetComponent<ControllerInput>();
-        //pi = playerHandle.GetComponent<PlayerInput>();
+        UserInput[] pis = playerHandle.GetComponents<UserInput>();
+        foreach (UserInput p in pis)
+        {
+            if (p.enabled)
+            {
+                pi = p;
+                break;
+            }
+        }
         model = playerHandle.GetComponent<AddController>().model;
 
         lastPosition = model.transform.position;
@@ -46,26 +51,9 @@ public class CameraController : MonoBehaviour
         tempEulerX += pi.Jup * vecticalSpeed * Time.fixedDeltaTime;
         tempEulerX = Mathf.Clamp(tempEulerX, -40, 30);
         cameraHandle.transform.localRotation = Quaternion.Euler(tempEulerX, 0, 0);
-        if (lastPosition != model.transform.position)
-        {
-            if (Quaternion.Equals(cameraHandle.transform.localRotation, lastLocalRotation) && Quaternion.Equals(transform.rotation, lastRotation))
-            {
-                camera.transform.position = Vector3.Lerp(camera.transform.position, transform.position, 0.2f);
-            }
-            else
-            {
-                camera.transform.position = Vector3.Lerp(camera.transform.position, transform.position, 0.6f);
-            }
-        }
-        else
-        {
-            camera.transform.position = Vector3.Lerp(camera.transform.position, transform.position, 0.7f);
-        }
-        camera.transform.rotation = transform.rotation;
-        lastLocalRotation = cameraHandle.transform.localRotation;
-        lastRotation = transform.rotation;
-        lastPosition = model.transform.position;
-
+            
+        camera.transform.position = Vector3.Lerp(camera.transform.position, transform.position, 0.2f);
+        camera.transform.LookAt(cameraHandle.transform);
         model.transform.rotation = tempModelRotation;
     }
 }
