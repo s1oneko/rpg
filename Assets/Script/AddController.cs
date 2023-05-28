@@ -6,6 +6,7 @@ public class AddController : MonoBehaviour
 {
     public GameObject model;
     public UserInput pi;
+    public CameraController cameraController;
     public float walkSpeed = 1.0f;
     public float runMuti = 2.0f;
     public float jumpVelocity = 3.8f;
@@ -41,11 +42,26 @@ public class AddController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!lockPlanar)
+        if (cameraController.lockstate == false)//未锁定
         {
-            planarVec = pi.Dmag * model.transform.forward * walkSpeed * (pi.run ? runMuti : 1.0f) * (pi.isEquiped ? 0.5f : 1f);
+            animator.SetFloat("forward", pi.Dmag * Mathf.Lerp(animator.GetFloat("forward"), pi.run ? 2.0f : 1.0f, 0.5f));
+            animator.SetFloat("right", 0);
         }
-        animator.SetFloat("forward", pi.Dmag * Mathf.Lerp(animator.GetFloat("forward"), pi.run ? 2.0f : 1.0f, 0.5f));//平滑起跑
+        else
+        {
+            Vector3 localDev = transform.InverseTransformVector(pi.Dvec);
+            animator.SetFloat("forward", localDev.z* (pi.run ? 2.0f : 1.0f));
+            animator.SetFloat("right", localDev.x * (pi.run ? 2.0f : 1.0f));
+        }
+
+        if (pi.lockon)
+        {
+            cameraController.lockUnlock();
+        }
+        if (pi.roll)
+        {
+            animator.SetTrigger("roll");
+        }
         if (pi.jump)
         {
             animator.SetTrigger("jump");
@@ -76,12 +92,27 @@ public class AddController : MonoBehaviour
                 SwitchWeapon();
             }
         }
-
-        if (pi.Dmag > 0.1f)
+        if (!cameraController.lockstate)
         {
-            Vector3 targetForward = Vector3.Slerp(model.transform.forward, pi.Dvec,0.1f);//平滑转身
-            model.transform.forward = targetForward;
+            if (pi.Dmag > 0.1f)
+            {
+                Vector3 targetForward = Vector3.Slerp(model.transform.forward, pi.Dvec, 0.1f);//平滑转身
+                model.transform.forward = targetForward;
+            }
+            if (!lockPlanar)
+            {
+                planarVec = pi.Dmag * model.transform.forward * walkSpeed * (pi.run ? runMuti : 1.0f) * (pi.isEquiped ? 0.5f : 1f);
+            }
         }
+        else
+        {
+            model.transform.forward = transform.forward;
+            if (!lockPlanar)
+            {
+                planarVec = pi.Dvec* walkSpeed * (pi.run ? runMuti : 1.0f) * (pi.isEquiped ? 0.5f : 1f);
+            }
+        }
+
     }
     void FixedUpdate()
     {
@@ -112,7 +143,7 @@ public class AddController : MonoBehaviour
     public void isNotGround()
     {
         animator.SetBool("isGround", false);
-        if(rb.velocity.sqrMagnitude > 50.0f )
+        if (rb.velocity.sqrMagnitude > 50.0f)
         {
             animator.SetTrigger("roll");
         }

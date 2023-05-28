@@ -443,7 +443,7 @@ ModelImporter:
     second: root
   - first:
       74: 7400000
-    second: GreatSword_Strafe_Walk_FR
+    second: Walk_FR
   - first:
       95: 9500000
     second: //RootNode
@@ -477,7 +477,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: GreatSword_Strafe_Walk_FR
+      name: Walk_FR
       takeName: Take 001
       internalID: 0
       firstFrame: 815

@@ -22,6 +22,8 @@ public abstract class UserInput : MonoBehaviour //没办法实例化
     public bool rattack = false;
     public bool defence = false;
     public bool isEquiped = false;
+    public bool roll = false;
+    public bool lockon = false;
     protected bool lastLAttack = false;
     protected bool lastRAttack = false;
     protected bool lastDefence = false;
