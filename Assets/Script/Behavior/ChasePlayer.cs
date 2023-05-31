@@ -8,9 +8,13 @@ using static BehaviorDesigner.Runtime.BehaviorManager;
 public class ChasePlayer : Action
 {
     public SharedTransform target;
-    public GameObject model;
-    public float rotationSpeed = 100f;
-    public float chaseSpeed =1.6f;
+    [SerializeField]
+    private float rotationSpeed = 100f;
+    [SerializeField]
+    private float chaseSpeed =1.6f;
+    [SerializeField]
+    private GameObject model;
+
     private float forward;
     private Transform transform;
     private Animator animator;
@@ -23,6 +27,10 @@ public class ChasePlayer : Action
         animator = Owner.GetComponent<Animator>();
         rb = model.GetComponent<Rigidbody>();
     }
+    public override void OnStart()
+    {
+        target= (SharedTransform)GlobalVariables.Instance.GetVariable("target");
+    }
     public override TaskStatus OnUpdate()
     {
         if (target.Value == null)
@@ -33,10 +41,14 @@ public class ChasePlayer : Action
         {
             forward= 0f;
             animator.SetFloat("forward",0f);
+            rb.velocity = Vector3.zero;
             return TaskStatus.Success;
         }
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("ground"))
+        {
+            return TaskStatus.Running;
+        }           
         animator.SetFloat("forward", forward * Mathf.Lerp(animator.GetFloat("forward"), forward == 2.0f ? 2.0f : 1.0f, 0.5f));//animation
-
         if (forward < 2.0f)
         {
             forward += 0.5f * Time.deltaTime;
@@ -50,12 +62,14 @@ public class ChasePlayer : Action
 
     public override void OnFixedUpdate()
     {
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("ground"))
+        {
+            return;
+        }
         direction = (target.Value.position - transform.position).normalized;
         rb.velocity = new Vector3(direction.x*forward*chaseSpeed, rb.velocity.y, direction.z*forward*chaseSpeed);
-        Vector3 temp = direction;
-        temp.y = 0f;
-        Quaternion lookRotation = Quaternion.LookRotation(temp);
-
+        direction.y = 0f;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, rotationSpeed * Time.fixedDeltaTime);
     }
 }

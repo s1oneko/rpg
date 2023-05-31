@@ -13,7 +13,6 @@ public class Attack : Action
     {
         animator = Owner.GetComponent<Animator>();
     }
-    // Update is called once per frame
     public override TaskStatus OnUpdate()
     {
         animator.SetTrigger("attack");

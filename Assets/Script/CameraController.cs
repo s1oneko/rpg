@@ -20,6 +20,8 @@ public class CameraController : MonoBehaviour
     private Quaternion tempModelRotation;
     private GameObject camera;
     private GameObject lockTarget;
+    private float halfHeight;
+
     
 
 
@@ -47,7 +49,7 @@ public class CameraController : MonoBehaviour
     {
         if (lockTarget != null)
         {
-            lockDot.rectTransform.position = Camera.main.WorldToScreenPoint(lockTarget.transform.position + new Vector3(0, 1f, 0));
+            lockDot.transform.position = Camera.main.WorldToScreenPoint(lockTarget.transform.position + new Vector3(0,halfHeight,0));
             if (Vector3.Distance(model.transform.position, lockTarget.transform.position) > 15.0f)
             {
                 lockDot.enabled=false;
@@ -73,6 +75,7 @@ public class CameraController : MonoBehaviour
             Vector3 tempForward = lockTarget.transform.position - model.transform.position;
             tempForward.y = 0;
             playerHandle.transform.forward = tempForward;
+            cameraHandle.transform.LookAt(lockTarget.transform.position);
         }
             
         camera.transform.position = Vector3.Lerp(camera.transform.position, transform.position, 0.2f);
@@ -100,6 +103,7 @@ public class CameraController : MonoBehaviour
                     lockTarget = collider.gameObject;
                     lockDot.enabled = true;
                     lockstate = true;
+                    halfHeight =collider.bounds.extents.y;
                 }
                 break;
             }
